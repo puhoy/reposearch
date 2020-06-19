@@ -63,7 +63,8 @@ def search(terms, platform, sort, reverse):
 
 platforms_by_name = {
     'github.com': GitHubSearch(),
-    'gitlab.org': GitLabSearch('https://gitlab.com', api_token='G3gsxHg73wydwTMyFYWx'),
+    'gitlab.org': GitLabSearch('https://gitlab.com',
+                               api_token='G3gsxHg73wydwTMyFYWx'),  # new, empty user, read-only api
     'codeberg.org': GiteaSearch('https://codeberg.org'),
     'git.spip.net': GiteaSearch('https://git.spip.net'),
     'gitea.com': GiteaSearch('https://gitea.com'),
@@ -79,8 +80,7 @@ platforms_by_name = {
     'git.daiko.fr': GiteaSearch('https://git.daiko.fr'),
     'gitea.anfuchs.de': GiteaSearch('https://gitea.anfuchs.de'),
     'git.sablun.org': GiteaSearch('https://git.sablun.org'),
-    'git.jcg.re': GiteaSearch('https://git.jcg.re'),
-    # 'bitbucket.com': BitBucketSearch('search_user','Hd8UVCbbf8szbhYeqtdx')
+    'git.jcg.re': GiteaSearch('https://git.jcg.re')
 }
 
 if __name__ == '__main__':
