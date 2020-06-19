@@ -80,13 +80,21 @@ class GiteaSearchResult(SearchResult):
         owner_name = search_result_item['owner']['login']
         repo_description = search_result_item['description'] or '?'
         last_commit = iso8601.parse_date(search_result_item['updated_at'])
+        created_at = iso8601.parse_date(search_result_item['created_at'])
         language = '?'
         license_dict = search_result_item.get('license')
         license = license_dict.get('name', None) if license_dict else None
 
         html_url = search_result_item['html_url']
 
-        super().__init__(repo_name, repo_description, html_url, owner_name, last_commit, language, license)
+        super().__init__(repo_name=repo_name,
+                         repo_description=repo_description,
+                         html_url=html_url,
+                         owner_name=owner_name,
+                         last_commit=last_commit,
+                         created_at=created_at,
+                         language=language,
+                         license=license)
 
 
 class GiteaSearch(SearchInterface):
@@ -97,8 +105,10 @@ class GiteaSearch(SearchInterface):
         params = dict(
             q='+'.join(keywords)
             , **tags)
-        response = self.requests.get(self.request_url, params=params)
-
+        try:
+            response = self.requests.get(self.request_url, params=params)
+        except Exception as e:
+            return False, self.base_url, e
         result = response.json()
         results = [GiteaSearchResult(item) for item in result['data']]
-        return results
+        return True, self.base_url, results
