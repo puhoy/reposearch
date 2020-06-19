@@ -3,18 +3,11 @@ from typing import List
 
 import click
 
-from search_interfaces._search_interface import SearchResult, SearchInterface
-from search_interfaces.gitea import GiteaSearch
-from search_interfaces.github import GitHubSearch
-from search_interfaces.gitlab import GitLabSearch
+from config.platforms import platforms_by_name
+from reposearch.search_interfaces._search_interface import SearchResult, SearchInterface
 
 
-@click.group()
-def cli():
-    pass
-
-
-def download(keywords, platforms: List[SearchInterface]):
+def fetch_concurrently(keywords, platforms: List[SearchInterface]):
     with futures.ThreadPoolExecutor(max_workers=20) as executor:
         to_do = []
         for platform in platforms:
@@ -32,7 +25,7 @@ def download(keywords, platforms: List[SearchInterface]):
         return results, errors
 
 
-@cli.command()
+@click.command()
 @click.argument('terms', nargs=-1, required=True)
 @click.option('--platform', default=None)
 @click.option('--sort', type=click.Choice(['last_commit', 'created_at']), default='last_commit')
@@ -45,10 +38,10 @@ def search(terms, platform, sort, reverse):
     else:
         platforms = platforms_by_name.values()
     results: List[SearchResult]
-    results, errors = download(keywords=terms, platforms=platforms)
+    results, errors = fetch_concurrently(keywords=terms, platforms=platforms)
 
     # todo:
-    # sort by latest_commit, project age, levenshtein distance to repo_name, open_issues, open_prs
+    # sort by levenshtein distance to repo_name, open_issues, open_prs
     # filter is_fork, archived, is_private
     if sort == 'last_commit':
         results = sorted(results, key=lambda r: r.last_commit, reverse=reverse)
@@ -61,27 +54,5 @@ def search(terms, platform, sort, reverse):
     click.echo_via_pager(f'{errors_formatted}\n{results_formatted}')
 
 
-platforms_by_name = {
-    'github.com': GitHubSearch(),
-    'gitlab.org': GitLabSearch('https://gitlab.com',
-                               api_token='G3gsxHg73wydwTMyFYWx'),  # new, empty user, read-only api
-    'codeberg.org': GiteaSearch('https://codeberg.org'),
-    'git.spip.net': GiteaSearch('https://git.spip.net'),
-    'gitea.com': GiteaSearch('https://gitea.com'),
-    'git.teknik.io': GiteaSearch('https://git.teknik.io'),
-    'opendev.org': GiteaSearch('https://opendev.org'),
-    'gitea.codi.coop': GiteaSearch('https://gitea.codi.coop'),
-    'git.osuv.de': GiteaSearch('https://git.osuv.de'),
-    'git.koehlerweb.org': GiteaSearch('https://git.koehlerweb.org'),
-    'gitea.vornet.cz': GiteaSearch('https://gitea.vornet.cz'),
-    'git.luehne.de': GiteaSearch('https://git.luehne.de'),
-    'djib.fr': GiteaSearch('https://djib.fr'),
-    'code.antopie.org': GiteaSearch('https://code.antopie.org'),
-    'git.daiko.fr': GiteaSearch('https://git.daiko.fr'),
-    'gitea.anfuchs.de': GiteaSearch('https://gitea.anfuchs.de'),
-    'git.sablun.org': GiteaSearch('https://git.sablun.org'),
-    'git.jcg.re': GiteaSearch('https://git.jcg.re')
-}
-
 if __name__ == '__main__':
-    cli()
+    search()

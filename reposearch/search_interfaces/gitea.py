@@ -1,6 +1,6 @@
 from iso8601 import iso8601
 
-from search_interfaces._search_interface import SearchInterface, SearchResult
+from reposearch.search_interfaces._search_interface import SearchInterface, SearchResult
 
 
 # https://try.gitea.io/api/swagger#/repository/repoSearch

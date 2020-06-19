@@ -1,6 +1,6 @@
 from iso8601 import iso8601
 
-from search_interfaces._search_interface import SearchResult, SearchInterface
+from reposearch.search_interfaces._search_interface import SearchResult, SearchInterface
 
 
 # https://developer.github.com/v3/search/
