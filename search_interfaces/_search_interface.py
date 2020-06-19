@@ -26,18 +26,21 @@ class SearchResult:
         self.language = language
         self.license = license
 
-    def _append_to_print(self, text, key, value):
-        text += click.style(key, bold=True)
-        text += f'{value}\n'
+        self.text = ''
+
+    def _append_to_print(self, key, value):
+        self.text += click.style(key, bold=True)
+        self.text += f'{value}\n'
 
     def print(self):
         self.last_commit = self.last_commit.replace(tzinfo=None)
         last_commit = humanize.naturaltime(self.last_commit)
-        text = ''
-        self._append_to_print(text, '', f'{self.owner_name}/{self.repo_name}')
-        self._append_to_print(text, 'Last Commit:', last_commit)
-        self._append_to_print(text, '-> ', self.html_url)
-        self._append_to_print(text, 'Description: ', self.repo_description[:100])
-        self._append_to_print(text, 'Language: ', self.language)
-        self._append_to_print(text, '', '')
-        return text
+
+
+        self._append_to_print(f'{self.owner_name} / {self.repo_name}', '')
+        self._append_to_print('  Last Commit: ', last_commit)
+        self._append_to_print('  -> ', self.html_url)
+        self._append_to_print('  Description: ', self.repo_description[:100])
+        self._append_to_print('  Language: ', self.language)
+        
+        return self.text
