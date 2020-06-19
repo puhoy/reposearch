@@ -98,6 +98,7 @@ class GiteaSearchResult(SearchResult):
 
 
 class GiteaSearch(SearchInterface):
+    name = 'Gitea'
     def __init__(self, base_url):
         super().__init__(base_url=base_url, search_path='api/v1/repos/search')
 

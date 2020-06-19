@@ -66,6 +66,8 @@ class GitHubSearchResult(SearchResult):
 
 
 class GitHubSearch(SearchInterface):
+    name = 'GitHub'
+
     # https://developer.github.com/v3/search/#search-repositories
 
     def __init__(self):

@@ -25,11 +25,22 @@ def fetch_concurrently(keywords, platforms: List[SearchInterface]):
         return results, errors
 
 
-@click.command()
+@click.group()
+def cli():
+    pass
+
+
+@cli.command()
+def list_platforms():
+    for platform_name, platform_search in platforms_by_name.items():
+        click.echo(f'{platform_name} ({platform_search.name})')
+
+
+@cli.command()
 @click.argument('terms', nargs=-1, required=True)
-@click.option('--platform', default=None)
-@click.option('--sort', type=click.Choice(['last_commit', 'created_at']), default='last_commit')
-@click.option('--reverse', default=True)
+@click.option('--platform', type=click.Choice(list(platforms_by_name.keys())), default=None, help='limit search to a platform')
+@click.option('--sort', type=click.Choice(['last_commit', 'created_at']), default='last_commit', help='sort results')
+@click.option('--reverse', default=True, help='reverse sort order')
 def search(terms, platform, sort, reverse):
     if platform:
         platforms = [platforms_by_name.get(platform, None)]
@@ -48,11 +59,13 @@ def search(terms, platform, sort, reverse):
     elif sort == 'created_at':
         results = sorted(results, key=lambda r: r.created_at, reverse=reverse)
 
-    errors_formatted = '\n'.join([click.style(f'could not get results from {base_url}: {error}\n', fg='red') for base_url, error in errors])
+    intro = f'showing results for {" ".join(terms)}'
+    errors_formatted = '\n'.join(
+        [click.style(f'could not get results from {base_url}: {error}\n', fg='red') for base_url, error in errors])
     results_formatted = '\n'.join([result.print() for result in results])
 
-    click.echo_via_pager(f'{errors_formatted}\n{results_formatted}')
+    click.echo_via_pager(f'{intro}\n\n{errors_formatted}\n{results_formatted}')
 
 
 if __name__ == '__main__':
-    search()
+    cli()

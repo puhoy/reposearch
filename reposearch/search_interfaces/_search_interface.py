@@ -7,6 +7,8 @@ import requests
 
 
 class SearchInterface:
+    name = ''
+
     def __init__(self, base_url, search_path):
         self.base_url = base_url
         self.requests = requests.session()

@@ -14,7 +14,7 @@ setuptools.setup(
     version="0.0.1",
     author="jan",
     author_email="stuff@kwoh.de",
-    description="a small cli tool to search for repositories across different platforms.",
+    description="a cli tool to search for repositories across different code hosting platforms.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/puhoy/reposearch",
@@ -32,7 +32,7 @@ setuptools.setup(
 
     entry_points={
         'console_scripts': [
-            'reposearch = reposearch.main:search'
+            'reposearch = reposearch.main:cli'
         ]
     }
 )
