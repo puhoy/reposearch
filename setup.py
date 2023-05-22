@@ -7,7 +7,7 @@ requirements = [
     'click==7.1.2',
     'humanize==2.4.0',
     'iso8601==0.1.12',
-    'requests==2.24.0',
+    'requests==2.31.0',
 ]
 setuptools.setup(
     name="reposearch",
